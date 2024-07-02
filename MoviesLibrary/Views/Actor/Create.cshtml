@@ -1,0 +1,69 @@
+﻿@model MoviesLibrary.Models.Actor
+
+@{
+    ViewData["Title"] = "Add Actor";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/actors.css" />
+}
+
+
+<div class="centerItems">
+    <h1>Add New Actor</h1>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4 wider">
+            <form asp-action="Create" onsubmit="return checkGender(event)">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Firstname" class="control-label bold centerLabel"></label>
+                    <input asp-for="Firstname" class="form-control centerText" />
+                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Lastname" class="control-label bold centerLabel"></label>
+                    <input asp-for="Lastname" class="form-control centerText" />
+                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gender" class="control-label bold centerLabel"></label>
+                    <select id="genderSelect" asp-items="Html.GetEnumSelectList<Gender>()"
+                            asp-for="Gender" class="form-select centerText">
+                        <option>Choose</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Birthdate" class="control-label bold centerLabel"></label>
+                    <input type="date" asp-for="Birthdate" class="form-control centerText" />
+                    <span asp-validation-for="Birthdate" class="text-danger"></span>
+                </div>
+                <div class="form-group centerBtns">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="ViewAll" id="backToListBtn" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }   
+    <script>
+        function checkGender(event) {
+            var gender = document.getElementById("genderSelect").value;
+            if (gender === "Choose") {
+                event.preventDefault();
+                alert("Please select a gender.");
+                return false; 
+            }
+            return true; 
+        }
+    </script>
+}

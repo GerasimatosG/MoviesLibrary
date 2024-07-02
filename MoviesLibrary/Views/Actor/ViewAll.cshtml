@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MoviesLibrary.Models.Actor>
+
+
+@{
+    ViewData["Title"] = "All Actors";
+}
+
+<div class="centerItems">
+    <h1>All Actors</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Firstname)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Lastname)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Gender)</th>
+                <th>Age</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var actor in Model)
+            {
+                <tr>
+                    <td>@actor.Firstname</td>
+                    <td>@actor.Lastname</td>
+                    <td>@actor.Gender</td>
+                    <td>@(CalculateAge(actor.Birthdate))</td>
+                    <td>
+                        <a asp-controller="Actor" asp-action="Edit" asp-route-id="@actor.Id" class="btn btn-primary">Edit</a>
+
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete('@actor.Firstname', '@actor.Lastname', @actor.Id)">Delete</button>
+
+                        <form id="deleteForm_@actor.Id" asp-controller="Actor" asp-action="Delete" asp-route-id="@actor.Id" method="post" style="display:none;">
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <a asp-controller="Actor" asp-action="Create" class="btn btn-primary goToNewBtn">Add New Actor</a>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function confirmDelete(firstname, lastname, actorId) {
+            var actorName = firstname + " " + lastname;
+            if (confirm("Are you sure you want to delete actor with name '" + actorName + "' (ID: " + actorId + ")?")) {
+                // If user confirms, submit the form
+                document.getElementById("deleteForm_" + actorId).submit();
+            } else {
+                // If user cancels, do nothing or perform another action
+            }
+        }
+    </script>
+}
+
+@functions {
+    public int CalculateAge(DateTime? birthdate)
+    {
+        if (!birthdate.HasValue)
+        {
+            return 0; // Or handle as needed when birthdate is null
+        }
+
+        DateTime dob = birthdate.Value;
+        DateTime today = DateTime.Today;
+        int age = today.Year - dob.Year;
+
+        // Adjust age if the birthday hasn't occurred yet this year
+        if (dob > today.AddYears(-age))
+        {
+            age--;
+        }
+
+        return age;
+    }
+}
+

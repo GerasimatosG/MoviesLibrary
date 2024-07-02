@@ -1,0 +1,57 @@
+﻿@model MoviesLibrary.Models.Actor
+
+@{
+    ViewData["Title"] = "Edit Actor";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/actors.css" />
+}
+
+
+<div class="centerItems">
+    <h1>Edit Actor</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-4 wider">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Firstname" class="control-label bold centerLabel"></label>
+                    <input asp-for="Firstname" class="form-control centerText" />
+                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Lastname" class="control-label bold centerLabel"></label>
+                    <input asp-for="Lastname" class="form-control centerText" />
+                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gender" class="control-label bold centerLabel"></label>
+                    <select asp-items="Html.GetEnumSelectList<Gender>()" asp-for="Gender" class="form-select centerText">
+                        <option>Choose</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Birthdate" class="control-label bold centerLabel"></label>
+                    <input type="date" asp-for="Birthdate" class="form-control centerText" />
+                    <span asp-validation-for="Birthdate" class="text-danger"></span>
+                </div>
+                <div class="form-group  centerBtns">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="ViewAll" id="backToListBtn" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }  
+}

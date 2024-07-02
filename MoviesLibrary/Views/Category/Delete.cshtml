@@ -1,0 +1,22 @@
+﻿@model MoviesLibrary.Models.Category 
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="centerItems">
+    <h1>Delete Category</h1>
+
+    <h3>Are you sure you want to delete this Category?</h3>
+    <div>
+        <h4>Category Name: <span id="itemToDelete"> @Model.Categoryname </span></h4>
+    </div>
+
+    <form asp-action="Delete" id="deleteItemConfirm" asp-route-id="@Model.Id" method="post">
+        <div>
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-asp-controller="Category" asp-action="ViewAll" class="btn btn-dark">Cancel</a>
+        </div>
+        @Html.AntiForgeryToken()
+    </form>
+</div>

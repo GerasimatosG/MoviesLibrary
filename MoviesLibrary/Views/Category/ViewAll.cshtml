@@ -1,0 +1,88 @@
+﻿@model List<MoviesLibrary.Models.Category>
+
+@{
+    ViewData["Title"] = "All Categories";
+}
+
+<div class="centerItems">
+    <h1>All Categories</h1>
+    <hr />
+    <div id="categoryError" style="display: none;">
+        <h1>@ViewBag.CategoryError</h1>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Categoryname)</th>
+                <th style="visibility:hidden" id="editHeader">New Category Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.Id</td>
+                    <td>@category.Categoryname</td>
+                    <td id="editFormContainer_@category.Id" style="visibility:hidden">
+                        <form id="editForm_@category.Id" asp-action="Edit" asp-route-id="@category.Id" method="post">
+                            <input type="text" name="Categoryname" value="@category.Categoryname" />
+                            <button class="btn-primary" type="submit">Save</button>
+                            <button type="button" class="btn-danger" onclick="cancelEdit(@category.Id)">Cancel</button>
+                        </form>
+                    </td>
+                    <td>
+                        <button class="editBtn" onclick="toggleEditForm(@category.Id)">Edit</button> |
+                        <button class="deleteBtn"><a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id">Delete</a></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+        <div>
+            <a asp-controller="Category" asp-action="Create" class="btn btn-primary goToNewBtn">Add New Category</a>
+        </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>      
+
+        function toggleEditForm(categoryId) {
+            var formContainerId = "editFormContainer_" + categoryId;
+            var formContainer = document.getElementById(formContainerId);
+            var editHeader = document.getElementById("editHeader");
+            if (formContainer.style.visibility = "hidden") {
+                formContainer.style.visibility = "visible"; 
+                editHeader.style.visibility = "visible";
+            } else {
+                formContainer.style.visibility = "hidden";
+                editHeader.style.visibility = "hidden";
+            }
+        }
+
+        function cancelEdit(categoryId) {
+            var formContainerId = "editFormContainer_" + categoryId;
+            var formContainer = document.getElementById(formContainerId);
+            var editHeader = document.getElementById("editHeader");
+            formContainer.style.visibility = "hidden";
+            editHeader.style.visibility = "hidden";
+        }
+
+        window.onload = function () {
+            var errorDiv = document.getElementById("categoryError");
+            if (errorDiv.innerText.trim() !== "") {
+                errorDiv.style.display = "block";
+                setTimeout(function () {
+                    errorDiv.style.display = "none";
+                }, 3000); 
+            }
+        };
+    </script>
+}
+

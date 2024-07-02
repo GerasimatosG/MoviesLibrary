@@ -1,0 +1,86 @@
+﻿@model List<MoviesLibrary.Models.Platform>
+
+@{
+    ViewData["Title"] = "All Platforms";
+}
+
+<div class="centerItems">
+    <h1>All Platforms</h1>
+    <hr />
+    <div id="platformError" style="display: none;">
+        <h1>@ViewBag.PlatformError</h1>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Platformname)</th>                
+                <th style="visibility:hidden" id="editHeader">New Platform Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var platform in Model)
+            {
+                <tr>
+                    <td>@platform.Id</td>
+                    <td>@platform.Platformname</td>                   
+                    <td id="editFormContainer_@platform.Id" style="visibility:hidden">
+                        <form id="editForm_@platform.Id" asp-action="Edit" asp-route-id="@platform.Id" method="post">
+                            <input type="text" name="PlatformName" value="@platform.Platformname" />
+                            <button class="btn-primary" type="submit">Save</button>
+                            <button type="button" class="btn-danger" onclick="cancelEdit(@platform.Id)">Cancel</button>
+                        </form>
+                    </td>
+                    <td>
+                        <button class="editBtn" onclick="toggleEditForm(@platform.Id)">Edit</button> |
+                        <button class="btn deleteBtn"><a asp-controller="Platform" asp-action="Delete" asp-route-id="@platform.Id">Delete</a></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <a asp-controller="Platform" asp-action="Create" class="btn btn-primary goToNewBtn">Add New Platform</a>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function toggleEditForm(platformId) {
+            var formContainerId = "editFormContainer_" + platformId;
+            var formContainer = document.getElementById(formContainerId);
+            var editHeader = document.getElementById("editHeader");
+
+            if (formContainer.style.visibility === "hidden") {
+                formContainer.style.visibility = "visible";
+                editHeader.style.visibility = "visible";
+            } else {
+                formContainer.style.visibility = "hidden";
+                editHeader.style.visibility = "hidden";
+            }
+        }
+
+        function cancelEdit(platformId) {
+            var formContainerId = "editFormContainer_" + platformId;
+            var formContainer = document.getElementById(formContainerId);
+            var editHeader = document.getElementById("editHeader");
+            formContainer.style.visibility = "hidden";
+            editHeader.style.visibility = "hidden";
+        }
+
+        window.onload = function () {
+            var errorDiv = document.getElementById("platformError");
+            if (errorDiv.innerText.trim() !== "") {
+                errorDiv.style.display = "block";
+                setTimeout(function () {
+                    errorDiv.style.display = "none";
+                }, 3000);
+            }
+        };
+    </script>
+}
